@@ -10,14 +10,14 @@ const { v4: uuidv4 } = require('uuid'); // Import UUID for unique order IDs
 
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // Middleware
 app.use(express.json());
 app.use(cors({
     origin: [
-        'http://localhost:3001',  // Allow frontend
-        'http://localhost:5173'   // Allow admin
+        process.env.CLIENT_URL,  // Allow frontend
+        process.env.ADMIN_URL   // Allow admin
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,  // Allow cookies if necessary
@@ -31,7 +31,7 @@ const fetchUser = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret_ecom");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;  // Attach user information to the request object
         next();  // Proceed to the next middleware or route handler
     } catch (error) {
@@ -90,7 +90,7 @@ app.delete("/admin/orders/:orderId", async (req, res) => {
 
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI || "mongodb+srv://ragava5454:Ragav%402004@cluster0.p1tdy.mongodb.net/e-commerce", {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
@@ -117,7 +117,7 @@ app.post("/upload", upload.single('product'), (req, res) => {
     }
     res.json({
         success: 1,
-        image_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/images/${req.file.filename}`
+        image_url: `${process.env.CLIENT_URL}/images/${req.file.filename}`
     });
 });
 
@@ -200,8 +200,8 @@ app.get('/popularinwomen', async (req, res) => {
 
 // Razorpay Setup
 const razorpay = new Razorpay({
-    key_id: "rzp_test_4HWc8dIvl5vg8Y",
-    key_secret: "UFr06eUFazTXJtsXmc3RPEA9",
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
 // Create Razorpay Order
@@ -232,7 +232,7 @@ app.post('/razorpay/payment/verify', async (req, res) => {
 
     // Generate the expected signature using the secret key
     const generated_signature = crypto
-      .createHmac('sha256', 'UFr06eUFazTXJtsXmc3RPEA9') // Razorpay secret key
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET) // Razorpay secret key
       .update(razorpay_order_id + '|' + razorpay_payment_id)
       .digest('hex');
 
@@ -289,7 +289,7 @@ app.post('/saveorder', async (req, res) => {
         return res.status(401).json({ error: "Access denied" });
     }
     try {
-        const data = jwt.verify(token, process.env.JWT_SECRET || "secret_ecom");
+        const data = jwt.verify(token, process.env.JWT_SECRET);
         const user = await Users.findById(data.id);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
@@ -327,7 +327,7 @@ app.get('/myorders', async (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_ecom');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
 
         // Fetch orders for the user
@@ -362,7 +362,7 @@ app.post('/signup', async (req, res) => {
         });
 
         await user.save();
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret_ecom");
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         res.json({ success: true, token });
     } catch (error) {
         res.status(500).json({ error: "Error during signup" });
@@ -374,7 +374,7 @@ app.post('/login', async (req, res) => {
     try {
         const user = await Users.findOne({ email: req.body.email });
         if (user && req.body.password === user.password) {
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret_ecom" );
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
             res.json({ success: true, token });
         } else {
             res.status(400).json({ error: "Invalid email or password" });
