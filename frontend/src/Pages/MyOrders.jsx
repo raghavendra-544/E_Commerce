@@ -35,7 +35,11 @@ const MyOrders = () => {
         };
 
         fetchOrders();
+        const interval = setInterval(fetchOrders, 500); // Fetch every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
     }, []);
+    
 
     return (
         <div className="my-orders-container">

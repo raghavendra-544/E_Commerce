@@ -35,6 +35,12 @@ const AdminOrders = () => {
     };
 
     const updateOrderStatus = async (orderId, newStatus) => {
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                order._id === orderId ? { ...order, status: newStatus } : order
+            )
+        );
+    
         try {
             const response = await fetch(`http://localhost:3000/admin/orders/${orderId}`, {
                 method: "PUT",
@@ -43,12 +49,14 @@ const AdminOrders = () => {
                 },
                 body: JSON.stringify({ status: newStatus }),
             });
-
+    
             if (!response.ok) {
                 throw new Error(`Failed to update order. Status: ${response.status}`);
             }
-
+    
             const updatedOrder = await response.json();
+    
+            // Ensure the order is updated correctly in case of server-side changes
             setOrders((prevOrders) =>
                 prevOrders.map((order) =>
                     order._id === updatedOrder._id
@@ -61,6 +69,7 @@ const AdminOrders = () => {
             setError("Failed to update order status.");
         }
     };
+    
 
     const deleteOrder = async (orderId) => {
         try {
