@@ -37,10 +37,9 @@ const MyOrders = () => {
         fetchOrders();
         const interval = setInterval(fetchOrders, 500); // Fetch every 5 seconds
 
-    return () => clearInterval(interval); // Cleanup on unmount
+        return () => clearInterval(interval); // Cleanup on unmount
     }, []);
     
-
     return (
         <div className="my-orders-container">
             <h2>My Orders</h2>
@@ -78,9 +77,15 @@ const MyOrders = () => {
                                 <div className="order-items">
                                     {order.items.map((item, index) => (
                                         <div key={index} className="order-item">
-                                            <img src={item.image || packageOrderImage} alt={item.name} className="order-item-image"/>
+                                            <img src={`http://localhost:3000/images/${item.image}`}  
+                                                onError={(e) => e.target.src = packageOrderImage}  
+                                                alt={item.name}  
+                                                className="order-item-image"  
+                                            />
+
                                             <div className="order-item-details">
                                                 <h5>{item.name}</h5>
+                                                <p><strong>Product ID:</strong> {item.productId || 'N/A'}</p>
                                                 <p><strong>Quantity:</strong> {item.quantity || 1}</p>
                                                 <p><strong>Payment ID:</strong> {order.paymentId || 'N/A'}</p>
                                                 <p><strong>Payment Status: </strong>

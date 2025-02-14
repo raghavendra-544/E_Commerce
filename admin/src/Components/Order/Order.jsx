@@ -56,7 +56,6 @@ const AdminOrders = () => {
     
             const updatedOrder = await response.json();
     
-            // Ensure the order is updated correctly in case of server-side changes
             setOrders((prevOrders) =>
                 prevOrders.map((order) =>
                     order._id === updatedOrder._id
@@ -69,7 +68,6 @@ const AdminOrders = () => {
             setError("Failed to update order status.");
         }
     };
-    
 
     const deleteOrder = async (orderId) => {
         try {
@@ -89,6 +87,11 @@ const AdminOrders = () => {
             console.error("Error deleting order:", error);
             setError("Failed to delete order.");
         }
+    };
+
+    // 🔹 Function to get product image path from assets folder
+    const getProductImage = (productId) => {
+        return `/assets/products/${productId}.png`;
     };
 
     return (
@@ -133,13 +136,15 @@ const AdminOrders = () => {
                                 <div className="order-items">
                                     {order.items.map((item, index) => (
                                         <div key={index} className="order-item">
-                                            <img src={item.image || packageOrderImage} 
-                                                 alt={item.name || "Package Image"} 
-                                                 className="order-item-image"
-                                                 onError={(e) => e.target.src = packageOrderImage} 
+                                            <img 
+                                                src={getProductImage(item.productId)}
+                                                alt={item.name || "Product Image"} 
+                                                className="order-item-image"
+                                                onError={(e) => e.target.src = packageOrderImage} 
                                             />
                                             <div className="order-item-details">
                                                 <h5>{item.name}</h5>
+                                                <p><strong>Product ID:</strong> {item.productId || 'N/A'}</p>
                                                 <p><strong>Quantity:</strong> {item.quantity || 1}</p>
                                                 <p><strong>Payment Status: </strong>
                                                     <span className={order.paymentId ? "paid" : "unpaid"}>

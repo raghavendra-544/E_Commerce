@@ -26,6 +26,7 @@
     color: #626262;
     font-size: 20px;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .nav-menu li {
@@ -102,6 +103,7 @@
     .nav-menu {
         gap: 30px;
         font-size: 16px;
+        margin-left: -50px;
     }
 
     .nav-login-cart {
@@ -173,26 +175,83 @@
 
         .nav-dropdown.open {
             transform: rotate(90deg);
-        }
+        } 
     }
 
     @media (max-width: 500px) {
         .navbar {
-            width: 8px 0px;
-            gap: 0;
-        }
+            width: 100%;
+            padding: 6px 8px; /* Slightly reduced padding for a tighter fit */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Maintain proper spacing */
+            gap: 0px; /* Reduce gap while keeping elements separated */
+        }        
 
         .nav-logo {
-            transform: scale(0.8);
+            display: flex;
+            align-items: center;
+            gap: 4px; /* Reduce gap between logo image and text */
         }
+        
+        .nav-dropdown {
+            margin-left: -50px; /* Move dropdown icon closer */
+        }
+        
 
-        .nav-menu {
-            height: 70px;
-            top: 50px;
-        }
-
-        .nav-login-cart {
-            transform: scale(0.8);
-        }
+    .nav-logo p {
+        font-size: 24px; /* Adjust font size */
     }
+
+    .nav-menu {
+        display: none;
+        position: absolute;
+        width: 100%;
+        top: 55px;
+        left: 0;
+        background-color: white;
+        justify-content: center;
+    }
+
+    .nav-menu-visible {
+        display: flex;
+        top: 50px;
+        margin-left: -15px; 
+    }
+
+    .nav-menu li {
+        gap: 2px; /* Reduce vertical spacing */
+    }
+
+    .nav-menu hr {
+        width: 50px; /* Shorter underline */
+        height: 2px;
+    }
+
+    .nav-login-cart {
+        display: flex;
+        align-items: center;
+        gap: 12px; /* Increase spacing slightly */
+        transform: scale(0.9); /* Slightly reduce size */
+    }
+
+    .nav-login-cart button {
+        width: 90px; /* Reduce width */
+        height: 34px; /* Reduce height */
+        font-size: 13px; /* Slightly smaller text */
+        padding: 5px 10px; /* Adjust padding for better fit */
+        margin-left: -70px;
+    }
+
+    .user-icon {
+        width: 15px;
+        margin-left: 30px; /* Add space from cart */
+    }
+    .nav-cart-count {
+        margin-left: -25px; /* Adjust this value to move it further right */
+    }
+
 }
+
+    
+}    

@@ -112,14 +112,18 @@ app.use('/images', express.static('upload/images'));
 
 // Image Upload Endpoint
 app.post("/upload", upload.single('product'), (req, res) => {
+    // Check if a file was uploaded
     if (!req.file) {
         return res.status(400).json({ success: 0, message: "No file uploaded." });
     }
+
+    // Respond with the image URL if file upload is successful
     res.json({
         success: 1,
         image_url: `${process.env.CLIENT_URL}/images/${req.file.filename}`
     });
 });
+
 
 // Product Schema
 const Product = mongoose.model("Product", {
